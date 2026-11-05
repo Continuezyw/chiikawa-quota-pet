@@ -1,0 +1,74 @@
+[
+  {
+    "id": "chiikawa",
+    "name": "吉伊",
+    "nameEn": "Chiikawa",
+    "file": "chiikawa.png",
+    "sourceUrl": "https://www.anime-chiikawa.jp/images/characters/img_charapage.png",
+    "sourcePage": "https://www.anime-chiikawa.jp/chara.html",
+    "notice": "©ナガノ/ちいかわ製作委員会。官方动画角色图集裁切；未取得再分发授权，个人原型用途不等于授权。"
+  },
+  {
+    "id": "hachiware",
+    "name": "小八",
+    "nameEn": "Hachiware",
+    "file": "hachiware.png",
+    "sourceUrl": "https://www.anime-chiikawa.jp/images/characters/img_charapage.png",
+    "sourcePage": "https://www.anime-chiikawa.jp/chara.html",
+    "notice": "©ナガノ/ちいかわ製作委員会。官方动画角色图集裁切；未取得再分发授权，个人原型用途不等于授权。"
+  },
+  {
+    "id": "usagi",
+    "name": "乌萨奇",
+    "nameEn": "Usagi",
+    "file": "usagi.png",
+    "sourceUrl": "https://www.anime-chiikawa.jp/images/characters/img_charapage.png",
+    "sourcePage": "https://www.anime-chiikawa.jp/chara.html",
+    "notice": "©ナガノ/ちいかわ製作委員会。官方动画角色图集裁切；未取得再分发授权，个人原型用途不等于授权。"
+  },
+  {
+    "id": "kurimanju",
+    "name": "栗子馒头",
+    "nameEn": "Kurimanju",
+    "file": "kurimanju.png",
+    "sourceUrl": "https://www.anime-chiikawa.jp/images/characters/img_charapage.png",
+    "sourcePage": "https://www.anime-chiikawa.jp/chara.html",
+    "notice": "©ナガノ/ちいかわ製作委員会。官方动画角色图集裁切；未取得再分发授权，个人原型用途不等于授权。"
+  },
+  {
+    "id": "momonga",
+    "name": "飞鼠",
+    "nameEn": "Momonga",
+    "file": "momonga.png",
+    "sourceUrl": "https://www.anime-chiikawa.jp/images/characters/img_charapage.png",
+    "sourcePage": "https://www.anime-chiikawa.jp/chara.html",
+    "notice": "©ナガノ/ちいかわ製作委員会。官方动画角色图集裁切；未取得再分发授权，个人原型用途不等于授权。"
+  },
+  {
+    "id": "rakko",
+    "name": "海獭",
+    "nameEn": "Rakko",
+    "file": "rakko.png",
+    "sourceUrl": "https://www.anime-chiikawa.jp/images/characters/img_charapage.png",
+    "sourcePage": "https://www.anime-chiikawa.jp/chara.html",
+    "notice": "©ナガノ/ちいかわ製作委員会。官方动画角色图集裁切；未取得再分发授权，个人原型用途不等于授权。"
+  },
+  {
+    "id": "shisa",
+    "name": "狮萨",
+    "nameEn": "Shisa",
+    "file": "shisa.png",
+    "sourceUrl": "https://www.anime-chiikawa.jp/images/characters/img_charapage.png",
+    "sourcePage": "https://www.anime-chiikawa.jp/chara.html",
+    "notice": "©ナガノ/ちいかわ製作委員会。官方动画角色图集裁切；未取得再分发授权，个人原型用途不等于授权。"
+  },
+  {
+    "id": "furuhonya",
+    "name": "古本屋",
+    "nameEn": "Furuhonya",
+    "file": "furuhonya.png",
+    "sourceUrl": "https://www.anime-chiikawa.jp/images/characters/img_charapage.png",
+    "sourcePage": "https://www.anime-chiikawa.jp/chara.html",
+    "notice": "©ナガノ/ちいかわ製作委員会。官方动画角色图集裁切；未取得再分发授权，个人原型用途不等于授权。"
+  }
+]

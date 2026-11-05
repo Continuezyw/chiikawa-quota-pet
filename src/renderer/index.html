@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Chiikawa · AI 额度桌宠</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="renderer.js" defer></script>
+</head>
+<body>
+  <main id="pet-view" class="pet-shell">
+    <button id="poke" class="pet-character" aria-label="摸摸角色，拖动移动，双击设置"><img id="pet-image" src="../../assets/characters/chiikawa.png" alt="Chiikawa 官方角色图"></button>
+  </main>
+  <main id="panel-view" class="panel-shell" hidden>
+    <section class="quota-card">
+      <div class="card-top"><span class="brand"><i class="brand-icon">✳</i> <span id="panel-title">EPT 额度</span></span><span id="source" class="source-tag">待查询</span></div>
+      <div class="remaining-label" id="remaining-label">可用额度</div>
+      <div class="remaining"><span id="currency">¥</span><strong id="remaining">—</strong><small id="unit">元</small></div>
+      <div id="budget-info"><div class="usage-line"><span>已用 <b id="used">—</b> / <span id="total">—</span></span><span id="percentage">—</span></div><div class="progress"><span id="progress-fill"></span></div></div>
+      <div id="balance-info" class="helper" hidden>官方余额接口不提供总限额 / 已用百分比</div>
+      <div class="sync-line"><span id="status-dot" class="status-dot"></span><span id="status-text">EPT 尚未查询</span><span id="updated">未同步</span></div>
+      <div class="panel-toolbar"><button id="refresh">↻ 同步</button><button id="settings">⚙ 设置</button><button id="hide">− 收起</button></div>
+    </section>
+  </main>
+  <main id="bubble-view" class="speech-shell" hidden><section class="speech-card" role="status" aria-live="polite"><span id="speech-name" class="speech-name">桌宠</span><p id="speech-text"></p></section></main>
+  <main id="settings-view" class="settings-shell" hidden>
+    <header class="settings-header"><div><span class="eyebrow">CHIIKAWA / QUOTA COMPANION</span><h1>小小一只，陪你在桌面。</h1><p>平时只显示形象 · 鼠标移近，额度轻轻出现</p></div><img id="settings-image" src="../../assets/characters/chiikawa.png" alt="当前角色"></header>
+    <div id="preview-notice" class="notice" hidden>浏览器仅预览外观；额度查询、气泡和自启动请使用桌面程序。</div>
+    <section class="settings-section">
+      <div class="section-heading"><span class="section-number">01</span><div><h2>今天，想和谁作伴？</h2><p>官方动画角色图 · 保留原图透明度与来源</p></div><span class="pill">8 个角色</span></div>
+      <div id="character-grid" class="character-grid"></div>
+      <div class="appearance-options"><div><label>桌宠大小</label><div id="size-options" class="segmented"><button data-size="small">小 <small>110</small></button><button data-size="medium">中 <small>165</small></button><button data-size="large">大 <small>235</small></button></div></div><div><label for="display-mode">额度显示</label><select id="display-mode"><option value="hover">悬停才显示</option><option value="always">始终在旁边显示</option></select></div></div>
+      <div class="button-row"><button id="import-character" class="secondary">＋ 导入本地 PNG / GIF / WebP</button><span class="helper">可使用你有权使用的其他角色图</span></div>
+      <p class="rights">©ナガノ/ちいかわ製作委員会 · 本地个人原型素材。公开可下载不等于授权；公开发布或转发含图片的版本前请确认许可。</p>
+      <label class="toggle-row"><span>始终置顶</span><input id="always-top" type="checkbox" checked></label>
+      <label class="toggle-row"><span>减少动画 <small>只静静陪伴</small></span><input id="reduced-motion" type="checkbox"></label>
+      <label class="toggle-row"><span>点击文字气泡 <small>本地台词，不消耗 AI 额度</small></span><input id="speech-enabled" type="checkbox" checked></label>
+      <label class="toggle-row"><span>开机自启动 <small>登录 Windows 后出现</small></span><input id="auto-start" type="checkbox"></label>
+      <p id="startup-status" class="helper">默认关闭；仅在你主动开启时注册。</p>
+    </section>
+    <section class="settings-section">
+      <div class="section-heading"><span class="section-number">02</span><div><h2>额度，从哪里来？</h2><p>公司限额与模型平台余额独立，不会混算。</p></div></div>
+      <select id="source-mode" class="wide"><option value="ept">公司账户 · EPT 本机额度</option><option value="deepseek">个人账户 · DeepSeek 官方余额</option><option value="custom">第三方平台 · 通用余额 / 额度 API</option></select>
+      <div id="ept-settings">
+        <p class="helper">只执行本机 <code>ept usage --summary-only --json</code>，不再使用浏览器读取。默认启动查询，之后按间隔更新。命令返回个人总花费，包含 AI Coding 与沙箱费用。</p>
+        <label for="ept-executable">EPT 程序路径（留空自动查找）</label><input id="ept-executable" type="text" autocomplete="off" spellcheck="false" placeholder="自动查找本机 .ept/bin 或 PATH 中的 ept.exe">
+        <div class="button-row"><button id="read-now" class="primary">立即查询 EPT ↻</button><button id="select-ept" class="secondary">选择 ept.exe</button><button id="auto-ept" class="secondary">恢复自动查找</button></div>
+        <div id="ept-diagnostic" class="connection-status">正在检查本机 EPT</div>
+        <p class="helper">另一台电脑需要自己的 EPT 安装和登录状态，先在终端确认 <code>ept usage</code> 正常。桌宠不保存或复制 EPT 密码 / Token，也不改变 EPT 账号。</p>
+        <p class="helper" id="ept-summary">尚未获得 EPT 汇总</p>
+      </div>
+      <div id="custom-settings" hidden>
+        <p class="helper">只查询平台公开或你有权使用的余额 API。需要平台提供 HTTPS GET JSON 接口；“兼容 OpenAI 聊天接口”不代表兼容余额接口。</p>
+        <label for="custom-preset">接口预设</label><select id="custom-preset" class="wide"><option value="generic">通用 JSON · 自定义字段</option><option value="deepseek">DeepSeek 兼容余额格式</option><option value="newapi">New API · 令牌额度字段模板</option></select>
+        <div class="field-grid"><div><label for="custom-label">平台显示名称</label><input id="custom-label" maxlength="40" placeholder="我的 AI 平台"></div><div><label for="custom-mode">数据类型</label><select id="custom-mode"><option value="balance">仅剩余余额</option><option value="quota">总额度与已用</option></select></div></div>
+        <label for="custom-endpoint">完整余额 API 地址（不是聊天接口）</label><input id="custom-endpoint" type="url" autocomplete="off" spellcheck="false" placeholder="https://your-provider.example/api/balance">
+        <p class="helper">仅 HTTPS，无重定向、URL 密钥或查询参数。New API 令牌接口示例 /api/usage/token/，请按平台文档核对精确路径与末尾斜杠；令牌额度不是账户余额。</p>
+        <div class="field-grid"><div><label for="custom-auth">认证方式</label><select id="custom-auth"><option value="bearer">Bearer API Key</option><option value="header">自定义 Key 请求头</option><option value="none">不需要认证</option></select></div><div id="custom-header-field"><label for="custom-header">Key 请求头名称</label><input id="custom-header" value="X-API-Key" spellcheck="false"></div></div>
+        <div class="field-grid"><div><label for="custom-currency">显示单位（按平台核对）</label><select id="custom-currency"><option value="CREDIT">credit · 原始积分</option><option value="CNY">CNY · 人民币</option><option value="USD">USD · 美元</option></select></div><div><label for="custom-divisor">原始值 ÷ 换算除数</label><input id="custom-divisor" type="number" min="0.000000001" max="1000000000" step="any" value="1"></div></div>
+        <div id="custom-balance-fields"><label for="custom-remaining">余额 JSON 字段路径</label><input id="custom-remaining" value="data.balance" spellcheck="false"></div>
+        <div id="custom-quota-fields" class="field-grid"><div><label for="custom-total">总额度字段路径</label><input id="custom-total" value="data.total" spellcheck="false"></div><div><label for="custom-used">已用字段路径</label><input id="custom-used" value="data.used" spellcheck="false"></div></div>
+        <p class="helper">点路径示例：data.balance、balance_infos.0.total_balance。仅余额模式不制造总额或百分比；除数默认 1，不自动假定积分等于人民币。</p>
+        <label class="checkbox-label"><input id="custom-confirm" type="checkbox"> 我已核对接口域名、字段与单位，同意仅将此平台自己的 Key 发往该地址</label>
+        <p id="custom-target" class="helper">尚未配置目标</p>
+        <div id="custom-key-fields"><label for="custom-key">此平台独立 API Key（不会复用 DeepSeek Key）</label><input id="custom-key" type="password" autocomplete="off" spellcheck="false" placeholder="已有 Key 可留空；更换接口后必须重新输入"><label class="checkbox-label"><input id="custom-remember" type="checkbox" checked> 使用本机系统加密记住此平台 Key</label></div>
+        <div class="button-row"><button id="save-custom" class="primary">保存并查询此平台</button><button id="clear-custom-key" class="secondary">清除此平台 Key</button></div>
+        <p id="custom-key-status" class="helper">未设置第三方 Key。</p>
+      </div>
+      <div id="deepseek-settings" hidden>
+        <label for="deepseek-key">你自己的 DeepSeek API Key</label><input id="deepseek-key" type="password" autocomplete="off" spellcheck="false" placeholder="只在此输入，不要发到聊天或分享包">
+        <label class="checkbox-label"><input id="remember-key" type="checkbox" checked> 使用本机系统加密记住 Key</label>
+        <div class="button-row"><button id="save-key" class="primary">保存并查询余额</button><button id="clear-key" class="secondary">清除 Key</button></div>
+        <p class="helper" id="key-status">Key 不会传入桌宠状态、日志或分享包。</p><p class="helper">只调用官方余额 GET 接口，不发推理请求。它只能查询 DeepSeek 账户余额，不能查询公司 600 元限额；接口不返回已用比例。</p>
+      </div>
+      <div class="setting-row"><label for="interval">在线来源刷新间隔</label><select id="interval"><option value="1">每 1 分钟</option><option value="5" selected>每 5 分钟</option><option value="15">每 15 分钟</option><option value="30">每 30 分钟</option></select></div>
+      <button id="save-connection" class="secondary">保存来源与连接</button>
+      <div id="connection-status" class="connection-status">EPT 尚未查询</div>
+    </section>
+    <footer class="settings-footer"><div>v0.4.0 · 单击气泡 / 拖动移动 / 双击设置 / 右键菜单<br><span>勿分享 user-data；它包含额度缓存、自定义图片与可选加密 Key。</span></div><button id="quit" class="text-button">退出</button></footer>
+  </main>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>
